@@ -1,0 +1,26 @@
+# Ignorar archivos de configuración de IDEs
+.vscode/
+.idea/
+
+# Ignorar archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Ignorar archivos sensibles
+*.env
+*.example
+*.local
+config/secrets.json
+
+# Ignorar directorios de dependencias
+node_modules/
+vendor/
+
+# Ignorar archivos de compilación
+dist/
+build/
+
+# Otros ejemplos de archivos a ignorar
+*.log
+*.bak
+*.swp

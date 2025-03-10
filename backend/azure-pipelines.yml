@@ -1,0 +1,50 @@
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  containerRegistry: 'your-container-registry'
+  imageRepository: 'smart-travel-planner-api'
+  tag: '$(Build.BuildId)'
+
+stages:
+- stage: Build
+  displayName: 'Build and push stage'
+  jobs:
+  - job: Build
+    displayName: 'Build and push Docker image'
+    steps:
+    - task: Docker@2
+      displayName: 'Build and push an image to container registry'
+      inputs:
+        command: buildAndPush
+        repository: $(imageRepository)
+        dockerfile: '$(Build.SourcesDirectory)/backend/Dockerfile'
+        containerRegistry: $(containerRegistry)
+        tags: |
+          $(tag)
+          latest
+
+- stage: Deploy
+  displayName: 'Deploy to Azure Container Apps'
+  dependsOn: Build
+  jobs:
+  - job: Deploy
+    displayName: 'Deploy to Azure Container Apps'
+    steps:
+    - task: AzureCLI@2
+      displayName: 'Deploy to Azure Container Apps'
+      inputs:
+        azureSubscription: 'your-azure-subscription'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          az containerapp update \
+            --name smart-travel-planner-api \
+            --resource-group smart-travel-planner-rg \
+            --image $(containerRegistry)/$(imageRepository):$(tag) \
+            --set-env-vars "AZURE_OPENAI_API_KEY=$(AZURE_OPENAI_API_KEY)" "AZURE_OPENAI_API_VERSION=$(AZURE_OPENAI_API_VERSION)" "AZURE_OPENAI_ENDPOINT=$(AZURE_OPENAI_ENDPOINT)" "AZURE_OPENAI_API_LLM_DEPLOYMENT_ID=$(AZURE_OPENAI_API_LLM_DEPLOYMENT_ID)" "AZURE_OPENAI_LLM_MODEL=$(AZURE_OPENAI_LLM_MODEL)"
