@@ -1,4 +1,9 @@
 import React, { useState } from 'react';
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { Separator } from "@/components/ui/separator";
+import { SendIcon, Loader2 } from "lucide-react";
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
@@ -17,29 +22,31 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, isLoading }) => {
   };
 
   return (
-    <div className="border-t border-gray-300 p-4 bg-white">
-      <form onSubmit={handleSubmit} className="flex">
-        <input
-          type="text"
+    <div className="border-t bg-background p-3">
+      <Separator className="mb-3" />
+      <form onSubmit={handleSubmit} className="flex items-center gap-2">
+        <Input
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          placeholder="Escribe tu mensaje..."
+          placeholder="Schreibe deine Nachricht..."
           disabled={isLoading}
-          className="flex-grow p-2 border border-gray-300 rounded-l-lg focus:outline-none focus:border-blue-500"
+          className={cn(
+            "flex-grow border-muted text-sm rounded-full py-5 px-4 shadow-sm",
+            "focus-visible:ring-primary focus-visible:ring-offset-0"
+          )}
         />
-        <button
-          type="submit"
-          disabled={isLoading || !message.trim()}
-          className={`bg-blue-600 text-white p-2 rounded-r-lg ${
-            isLoading || !message.trim() ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-700'
-          }`}
+        <Button 
+          type="submit" 
+          size="icon"
+          disabled={isLoading || !message.trim()} 
+          className="rounded-full h-10 w-10 flex-shrink-0 shadow-md"
         >
           {isLoading ? (
-            <span className="inline-block animate-spin">⏳</span>
+            <Loader2 className="h-5 w-5 animate-spin" />
           ) : (
-            'Enviar'
+            <SendIcon className="h-5 w-5" />
           )}
-        </button>
+        </Button>
       </form>
     </div>
   );

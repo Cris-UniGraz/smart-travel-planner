@@ -1,4 +1,6 @@
 import React from 'react';
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { cn } from "@/lib/utils";
 
 interface ChatMessageProps {
   message: string;
@@ -14,22 +16,37 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message, isUser }) => {
       // Si el texto está entre corchetes, extraer el contenido y aplicar estilo
       if (part.match(/^\[.*\]$/)) {
         const content = part.substring(1, part.length - 1);
-        return <span key={index} className="highlight">{content}</span>;
+        return <span key={index} className="highlight font-medium">{content}</span>;
       }
       return part;
     });
   };
 
   return (
-    <div className={`flex w-full mb-4 ${isUser ? 'justify-end' : 'justify-start'}`}>
+    <div className={cn(
+      "flex w-full mb-3 items-end gap-2",
+      isUser ? "justify-end" : "justify-start"
+    )}>
+      {!isUser && (
+        <Avatar className="h-8 w-8 mb-1">
+          <AvatarFallback className="bg-primary text-primary-foreground text-xs">STP</AvatarFallback>
+        </Avatar>
+      )}
       <div
-        className={`max-w-[80%] rounded-lg px-4 py-2 ${
-          isUser
-            ? 'bg-blue-600 text-white'
-            : 'bg-gray-200 text-gray-800'
-        }`}
+        className={cn(
+          "max-w-[80%] px-3 py-2 shadow-sm whitespace-pre-wrap",
+          isUser 
+            ? "bg-primary text-primary-foreground rounded-t-lg rounded-l-lg" 
+            : "bg-secondary text-secondary-foreground rounded-t-lg rounded-r-lg"
+        )}
       >
-        <p className="whitespace-pre-wrap">{formatMessage(message)}</p>
+        <p className="text-sm">{formatMessage(message)}</p>
+        <div className={cn(
+          "text-[10px] mt-1 opacity-70 text-right",
+          isUser ? "text-primary-foreground/70" : "text-secondary-foreground/70"
+        )}>
+          {new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+        </div>
       </div>
     </div>
   );

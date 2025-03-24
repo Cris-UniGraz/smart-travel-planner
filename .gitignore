@@ -10,6 +10,7 @@ Thumbs.db
 *.env
 *.example
 *.local
+*.Identifier
 config/secrets.json
 
 # Ignorar directorios de dependencias
@@ -19,6 +20,17 @@ vendor/
 # Ignorar archivos de compilación
 dist/
 build/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Ignorar entornos virtuales
+venv/
+env/
+ENV/
 
 # Otros ejemplos de archivos a ignorar
 *.log
